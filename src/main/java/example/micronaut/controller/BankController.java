@@ -20,28 +20,26 @@ public class BankController {
     @Inject
     private BankService bankService;
 
-
     @Get(value = "/get-bank/{id}", produces = MediaType.APPLICATION_JSON_STREAM)
-    public HttpResponse getBank(@NotBlank String id) throws IOException {
-         return HttpResponse.ok(bankService.getBank(id));
+    public Object getBank(@NotBlank String id) throws IOException {
+         return bankService.getBank(id);
     }
 
     @Get(value = "/get-banks/", produces = MediaType.APPLICATION_JSON_STREAM)
-    public HttpResponse getIFSC() throws IOException {
-        return HttpResponse.ok(bankService.getALLIFSC());
+    public Object getIFSC() throws IOException {
+        return bankService.getALLIFSC();
     }
 
 
     @Post(value = "/add-bank")
-    public HttpResponse<Bank> save(@Body @NotBlank Bank bank) throws IOException {
+    public void save(@Body @NotBlank Bank bank) throws IOException {
         bankService.update(bank);
-        return HttpResponse.created(bank);
     }
 
     @Post(value = "/delete-bank", consumes = MediaType.TEXT_PLAIN)
-    public HttpResponse<Bank> delete(@Body @NotNull String id) throws IOException {
+    public void  delete(@Body @NotNull String id) throws IOException {
         bankService.delete(id);
-        return HttpResponse.ok();
+
     }
 
 

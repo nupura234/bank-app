@@ -1,12 +1,10 @@
 package example.micronaut.dao;
-
 import example.micronaut.service.Bank;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -14,7 +12,7 @@ public class BankDao implements Dao{
 
     private List<Bank> banks = new ArrayList<>();
 
-    public String formatCell(Cell cell){
+    private String formatCell(Cell cell){
 
             DataFormatter dataFormatter = new DataFormatter();
 
@@ -50,38 +48,39 @@ public class BankDao implements Dao{
     @Override
     public Object get(String id) {
 
-        Iterator iterator = banks.iterator();
-        while(iterator.hasNext()) {
+        try {
+            return banks.stream().filter(p -> p.getId().equals(id)).findFirst().get();
 
-            Bank obj = (Bank) iterator.next();
-            if(obj.getId().equals(id)) {
-                return obj; } }
+        }
+        catch (NoSuchElementException e) {
+            return "None Present";
+        }
 
-        return "None";
+
+    }
+        @Override
+        public List<Bank> getAll () {
+            return banks;
+        }
+
+        @Override
+        public void update (Bank bank){
+            banks.add(bank);
+        }
+
+        @Override
+        public void delete (String id){
+
+        Bank bank = banks.stream().filter(p -> p.getId().equals(id))
+                .findFirst()
+                .get();
+
+        banks.remove(bank);
 
     }
 
-    @Override
-    public List<Bank> getAll() {
-        return banks;
-    }
 
-    @Override
-    public void update(Bank bank) {
-           banks.add(bank);
-    }
 
-    @Override
-    public void delete(String id) {
-
-        Iterator iterator = banks.iterator();
-        while(iterator.hasNext()) {
-
-            Bank obj = (Bank) iterator.next();
-
-            if(obj.getId().equals(id)) {
-                iterator.remove(); } }
-    }
 
 
 }
