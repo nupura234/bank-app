@@ -1,3 +1,9 @@
 micronaut:
   application:
     name: micronautguide
+firebase:
+  credential:
+    path: src/main/data/big-synthesizer-250605-0d15f91754ab.json
+logging:
+  level:
+    root: info

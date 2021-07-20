@@ -1,47 +1,52 @@
 package example.micronaut.service;
 
-import example.micronaut.dao.BankDao;
-import example.micronaut.dao.Dao;
+import com.google.cloud.firestore.Firestore;
+import example.micronaut.dto.BankDTO;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @Singleton
 public class BankServiceImpl implements BankService {
 
+    private Firestore config;
+    private BankDTO bankdto;
+    private String collectionRef;
 
-    private BankDao bankDao;
+    private static final Logger log = LogManager.getLogger(BankServiceImpl.class.getName());
 
-    public BankServiceImpl() throws IOException {
+    public BankServiceImpl() throws Exception {
 
-        bankDao = new BankDao();
-
-
-    }
-
-    public List<Bank> getALLIFSC(){
-
-        return this.bankDao.getAll();
+        this.config = new FireStoreConfig().getConf();
+        this.collectionRef = "banks";
+        bankdto = new BankDTO(config, collectionRef);
 
     }
 
+    public Object getALLIFSC(){
+             return this.bankdto.retrieveAll();
+        }
 
-    public Object getBank(String id) throws IOException {
 
-            return this.bankDao.get(id);
+    public Object getBank(String id) throws Exception {
+            return this.bankdto.get(id);
+
+    }
+
+    @Override
+    public void update(Object model) {
+        this.bankdto.save((Bank) model);
+
+    }
+
+    @Override
+    public void delete(Object model) {
+        this.bankdto.delete((Bank) model);
 
     }
 
 
-    public void update(Bank bank) throws IOException {
-
-        this.bankDao.update(bank);
-
-    }
-
-    public void delete(String id){
-
-        this.bankDao.delete(id);
-    }
 
 }
